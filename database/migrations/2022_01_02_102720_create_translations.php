@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateTranslations extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('translations', function (Blueprint $table) {
+            $table->id();
+            $table->morphs('translatable');
+            $table->unsignedInteger('locale_id');
+            $table->string('property');
+            $table->string('property_value')->nullable();
+            $table->timestamps();
+
+            $table->unique(['translatable_type', 'translatable_id', 'locale_id', 'property'], 'unique_property');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('translations');
+    }
+}

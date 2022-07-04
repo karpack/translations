@@ -1,0 +1,49 @@
+{
+    "name": "karpack/translations",
+    "description": "Centralized translations management module",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/karpack/translations/issues",
+        "source": "https://github.com/karpack/translations"
+    },
+    "keywords": ["laravel", "translations"],
+    "authors": [
+        {
+            "name": "Kalesh Kaladharan",
+            "email": "kalesh.13@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "illuminate/database": ">=7.0",
+        "illuminate/support": ">=7.0",
+        "karpack/support": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Karpack\\Translations\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Karpack\\Translations\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Karpack\\Translations\\TranslationServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
