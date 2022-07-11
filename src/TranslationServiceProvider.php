@@ -8,6 +8,16 @@ use Illuminate\Support\ServiceProvider;
 class TranslationServiceProvider extends ServiceProvider
 {
     /**
+     * Register the translation service
+     * 
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton(Locales::class, Locales::class);
+    }
+
+    /**
      * Bootstrap the translation services.
      *
      * @return void

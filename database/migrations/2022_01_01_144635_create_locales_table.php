@@ -15,12 +15,14 @@ class CreateLocalesTable extends Migration
     {
         Schema::create('locales', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('iso_code')->unique();
             $table->string('name');
-            $table->string('direction');
-            $table->string('iso_code');
-            $table->string('regional_code');
+            $table->string('charset')->default('UTF-8');
+            $table->boolean('rtl')->default(false);
             $table->timestamps();
         });
+
+        locales()->seed();
     }
 
     /**

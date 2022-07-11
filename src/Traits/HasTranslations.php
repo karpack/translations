@@ -4,9 +4,7 @@ namespace Karpack\Translations\Traits;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
 use Karpack\Support\Traits\HasAdditionalProperties;
-use Karpack\Translations\Models\Locale;
 use Karpack\Translations\Models\Translation;
 
 trait HasTranslations
@@ -19,13 +17,6 @@ trait HasTranslations
      * @var \Illuminate\Support\Collection
      */
     protected $cachedLocaleTranslations;
-
-    /**
-     * Cache of all the locales registered on the app.
-     * 
-     * @var \Illuminate\Support\Collection
-     */
-    protected $cachedLocales;
 
     /**
      * Returns the keys/properties that can have different translations.
@@ -151,49 +142,23 @@ trait HasTranslations
      */
     protected function translationOfCurrentRequest($translations)
     {
-        $currentLocale = $this->locales()->where('iso_code', App::getLocale())->first();
+        $currentLocaleId = locale_id(App::getLocale());
 
-        // If the current request locale is not registered on the application, we'll use
-        // english as the current locale.
-        if (is_null($currentLocale)) {
-            $currentLocale = $this->locales()->where('iso_code', Locale::ENGLISH_CODE)->first();
+        // We have a valid currentLocale id. Check whether we have the translation for the same
+        // If so, return that translation.
+        if ($translations->has($currentLocaleId)) {
+            return $translations->get($currentLocaleId);
         }
 
-        if (!is_null($currentLocale)) {
-            // We have a valid currentLocale model. Check whether we have the translation for the same
-            // If so, return that translation.
-            if ($translations->has($localeId = $currentLocale->getKey())) {
-                return $translations->get($localeId);
-            }
+        // No translation exists for the current local key. Try to send the english translations by
+        // default.
+        $currentLocaleId = locales()->defaultLocaleId();
 
-            // No translation exists for the current local key. Try to send the english translations by
-            // default.
-            if ($translations->has(Locale::ENGLISH)) {
-                return $translations->get(Locale::ENGLISH);
-            }
+        if ($translations->has($currentLocaleId)) {
+            return $translations->get($currentLocaleId);
         }
+
         return $translations->first();
-    }
-
-    /**
-     * Loads all the application locales
-     * 
-     * @param bool $reload
-     * @return \Illuminate\Database\Eloquent\Collection<\Karpack\Translations\Models\Locale>
-     */
-    protected function locales($reload = false)
-    {
-        if (!$reload && isset($this->cachedLocales)) {
-            return $this->cachedLocales;
-        }
-        $this->cachedLocales = Cache::get('locales');
-
-        if (is_null($this->cachedLocales)) {
-            $this->cachedLocales = Locale::all();
-
-            Cache::put('locales', $this->cachedLocales);
-        }
-        return $this->cachedLocales;
     }
 
     /**
@@ -236,7 +201,7 @@ trait HasTranslations
      */
     protected function getDefaultLocaleTranslation()
     {
-        return $this->getTranslationOfLocale(Locale::ENGLISH);
+        return $this->getTranslationOfLocale(locales()->defaultLocaleId());
     }
 
     /**
