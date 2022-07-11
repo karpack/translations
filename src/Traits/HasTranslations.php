@@ -57,6 +57,16 @@ trait HasTranslations
     }
 
     /**
+     * Appends `property_translations` key to the model.
+     * 
+     * @return $this
+     */
+    public function withTranslations()
+    {
+        return $this->append('property_translations');
+    }
+
+    /**
      * Returns all the translations of this model.
      * 
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
